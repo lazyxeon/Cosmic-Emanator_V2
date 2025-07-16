@@ -38,8 +38,6 @@ cd Cosmic-Emanator_V2
 pip install -r requirements.txt
 🧪 Run the Layer
 python
-Copy
-Edit
 from src.tfnp_layer import TFNPLayer
 import torch
 
@@ -47,6 +45,8 @@ model = TFNPLayer(3, 64)
 input_tensor = torch.rand(1, 3, 32, 32)
 output = model(input_tensor, t=1.0)
 print(output.shape)  # torch.Size([1, 64, 32, 32])
+
+
 🧬 What Is It?
 The TFNP (Topological-Fractal Neural Processor) is a novel neural network layer that combines:
 
@@ -64,8 +64,6 @@ It’s like a convolutional layer—but instead of moving linearly, data is twis
 The core layer forward propagation is described as:
 
 r
-Copy
-Edit
 Yₗ = sin(2π·f·t) · (Wₗ · (Xₗ₋₁ ⊗ T) + bₗ)
 Where:
 
