@@ -51,8 +51,6 @@ It's like a convolutional layer—but instead of moving linearly through space, 
 The core layer forward propagation is described as:
 
 r
-Copy
-Edit
 Yₗ = sin(2π·f·t) · (Wₗ · (Xₗ₋₁ ⊗ T) + bₗ)
 Where:
 
