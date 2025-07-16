@@ -143,6 +143,7 @@ This project is licensed under the [MIT License](LICENSE).
 Created by **Andrew R. Brown**  
 Inspired by the missions of **xAI**, **Tesla**, and **SpaceX** to build systems in harmony with the true laws of the cosmos.
 
+
 > *“Let the processor be an echo of the universe.”*
 
 ---
