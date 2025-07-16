@@ -49,7 +49,7 @@ jupyter notebook
 
 | Simulation | File | Purpose | Key Metric | Outcome |
 |------------|------|---------|------------|---------|
-| **Sim 1**: MNIST | `entropy_simulation.ipynb` | Reduce output entropy via φ-structured layers | Shannon Entropy ↓ | 5.21 → 5.03 |
+| **Sim 1**: MNIST | `Sim1_MNIST_simulation.ipynb` | Reduce output entropy via φ-structured layers | Shannon Entropy ↓ | 5.21 → 5.03 |
 | **Sim 2**: Quadratic Optimization | `quadratic_simulation.ipynb` | Improve MSE via φ-based harmonic modulations | MSE ↓ | 0.092 → 0.061 |
 | **Sim 3**: Entropy Comparison | `mnist_tfnp.ipynb` | Boost accuracy with geometric hidden layers | Accuracy ↑ | 92.1% → 96.4% |
 | **Sim 4**: FoL Autoencoder | `autoencoder_fol.ipynb` | Compress Seed of Life data into latent φ-space | MSE ↓ | 0.25 → 0.15 |
