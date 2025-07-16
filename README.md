@@ -33,17 +33,7 @@ The **Cosmic Emanator** is a speculative, research-grade model of intelligence g
 git clone https://github.com/lazyxeon/Cosmic-Emanator.git
 cd Cosmic-Emanator
 pip install -r requirements.txt
-🧪 Run the Layer
-python
-Copy
-Edit
-from src.tfnp_layer import TFNPLayer
-import torch
 
-model = TFNPLayer(3, 64)  # RGB input, 64 output channels
-input_tensor = torch.rand(1, 3, 32, 32)
-output = model(input_tensor, t=1.0)
-print(output.shape)  # torch.Size([1, 64, 32, 32])
 🧬 What Is It?
 The TFNP (Topological-Fractal Neural Processor) is a novel neural network layer that combines:
 
