@@ -140,21 +140,6 @@ Simulations of fractal physics or cosmological processes
 
 Robust architectures for AI reasoning with memory and symmetry
 
-🗂 Project Structure
-bash
-Copy
-Edit
-Cosmic-Emanator/
-├── src/                      # Core TFNP Layer
-│   └── tfnp_layer.py
-├── notebooks/               # Demos and Simulations
-│   ├── mnist_demo.ipynb
-│   ├── entropy_sim.ipynb
-│   └── math_derivations.ipynb
-├── docs/                    # Mini whitepaper and references
-│   └── mini_whitepaper.md
-├── requirements.txt
-└── README.md
 📚 Notebooks
 Notebook	Description
 mnist_demo.ipynb	Tests the TFNP layer on noisy MNIST data
