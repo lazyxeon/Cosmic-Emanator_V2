@@ -52,7 +52,7 @@ jupyter notebook
 | **Sim 1**: MNIST | `notebooks/Sim1_MNIST_simulation.ipynb` | Reduce output entropy via φ-structured layers | Shannon Entropy ↓ | 5.21 → 5.03 |
 | **Sim 2**: Quadratic Optimization | `notebooks/Sim2_quadratic_optimization_simulation.ipynb` | Improve MSE via φ-based harmonic modulations | MSE ↓ | 0.092 → 0.061 |
 | **Sim 3**: Entropy Comparison | `notebooks/Sim3_entropy_comparison_simulation.ipynb` | Boost accuracy with geometric hidden layers | Accuracy ↑ | 92.1% → 96.4% |
-| **Sim 4**: FoL Autoencoder | `autoencoder_fol.ipynb` | Compress Seed of Life data into latent φ-space | MSE ↓ | 0.25 → 0.15 |
+| **Sim 4**: FoL Autoencoder | `notebooks/Sim4_autoencoder_fol_simulation.ipynb` | Compress Seed of Life data into latent φ-space | MSE ↓ | 0.25 → 0.15 |
 | **Sim 5**: TFNP Fruit of Life Autoencoder | `autoencoder_fruit.ipynb` | Activate recursive φ codes for latent coherence | Entropy ↓ | 2.10 → 1.75 |
 | **Sim 6**: Biophoton Quantum Emission | `biophoton_simulation.ipynb` | Simulate Fruit-node emission coherence via φ | Entropy ↓ | 2.5 → 1.2 |
 | **Sim 7**: Quantum Foam Stability | `quantum_foam_simulation.ipynb` | Test entanglement stability under foam | Concurrence Var ↓ | ~0.001% |
