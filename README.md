@@ -56,7 +56,7 @@ jupyter notebook
 | **Sim 5**: TFNP Fruit of Life Autoencoder | `notebooks/Sim5_Fruit_TFNP_Autoencoder_Simulation.ipynb` | Activate recursive φ codes for latent coherence | Entropy ↓ | 2.10 → 1.75 |
 | **Sim 6**: Biophoton Quantum Emission | `notebooks/Sim6_biophoton_simulation.ipynb` | Simulate Fruit-node emission coherence via φ | Entropy ↓ | 2.5 → 1.2 |
 | **Sim 7**: Quantum Foam Stability | `notebooks/Sim7_qauntum_foam_stability_simulation.ipynb` | Test entanglement stability under foam | Concurrence Var ↓ | ~0.001% |
-| **Sim 8**: Kryst Spiral vs Trap | `kryst_spiral_simulation.ipynb` | Detect “trap” cycles vs infinite expansion | Var(Entropy) ↓ | 0.103 → 0.086 |
+| **Sim 8**: Kryst Spiral vs Trap | `notebooks/Sim8_Kryst_Spiral_Trap_Detection_Simulation.ipynb` | Detect “trap” cycles vs infinite expansion | Var(Entropy) ↓ | 0.103 → 0.086 |
 
 ---
 
