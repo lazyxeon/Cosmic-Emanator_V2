@@ -44,88 +44,7 @@ It’s like a convolutional layer—but instead of moving linearly through space
 🧮 Mathematical Summary
 The core layer forward propagation is described as:
 
-𝑌
-𝑙
-=
-sin
-⁡
-(
-2
-𝜋
-𝑓
-𝑡
-)
-⋅
-(
-𝑊
-𝑙
-⋅
-(
-𝑋
-𝑙
-−
-1
-⊗
-𝑇
-)
-+
-𝑏
-𝑙
-)
-Y 
-l
-​
- =sin(2πft)⋅(W 
-l
-​
- ⋅(X 
-l−1
-​
- ⊗T)+b 
-l
-​
- )
-Where:
-
-𝑇
-=
-𝑒
-𝑖
-𝛼
-(
-𝜙
-𝑖
-−
-𝜙
-𝑗
-)
-T=e 
-iα(ϕ 
-i
-​
- −ϕ 
-j
-​
- )
- : Twist tensor
-
-𝛼
-=
-7
-2
-α= 
-2
-7
-​
- : Asymmetry constant
-
-𝜙
-≈
-1.618
-ϕ≈1.618: Golden ratio scaling
-
-𝑡
-t: Time/frequency modulation input
+𝑌𝑙=sin⁡ (2𝜋𝑓𝑡)⋅(𝑊𝑙⋅(𝑋𝑙−1⊗𝑇)+𝑏𝑙)Y l ​ =sin(2πft)⋅(W l ​ ⋅(X l−1 ​ ⊗T)+b l​  )Where: 𝑇=𝑒𝑖𝛼(𝜙𝑖−𝜙𝑗)T=e iα(ϕ i​  −ϕ j  ) : Twist tensor 𝛼=72α= 27​ : Asymmetry constant 𝜙≈1.618ϕ≈1.618: Golden ratio scaling 𝑡t: Time/frequency modulation input
 
 🧪 Benchmark Highlights
 Task	TFNP Result	Baseline ConvNet
@@ -164,7 +83,7 @@ MIT License
 Open for research. Commercial use requires attribution and/or collaboration.
 
 ✨ Acknowledgments
-Created by [Your Name]
+Created by Andrew R Brown
 Inspired by the mission of xAI, Tesla, and SpaceX to understand and build based on the true nature of the universe.
 
 “Let the processor be an echo of the cosmos.”
