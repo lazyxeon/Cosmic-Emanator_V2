@@ -1,0 +1,16 @@
+# Core ML & Scientific Libraries
+torch>=2.1.0           # PyTorch for TFNP and Fruit Layer simulations
+numpy>=1.24.0          # Numerical arrays and math
+scipy>=1.10.0          # Entropy, ODE solvers, optimization
+
+# Quantum Simulation
+qutip>=4.7.0           # Quantum toolbox used for biophoton and quantum foam sims
+
+# Notebook & Visualization (optional but recommended)
+matplotlib>=3.7.0      # Plotting (for sim visualizations)
+jupyterlab>=4.0.0      # Interactive notebook interface
+ipython>=8.12.0        # Enhanced Python shell (for notebooks)
+
+# Type Checking & Dev Tools (optional)
+mypy>=1.2.0
+black>=23.3.0
