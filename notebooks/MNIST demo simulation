@@ -1,137 +1,230 @@
-"""
-📊 MNIST TFNP Simulation Demo
-This script compares a standard neural net vs. a TFNP-enhanced net on the MNIST dataset.
-Metrics tracked:
-- Epoch loss
-- Loss variance
-- Training time
-- Final test accuracy
-"""
-
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torchvision import datasets, transforms
-from torch.utils.data import DataLoader
-import time
-import numpy as np
-import torch.nn.functional as F
-import math
-
-# ===========================
-# Define the TFNP Layer
-# ===========================
-class TFNPLayer(nn.Module):
-    def __init__(self, in_features, out_features, phi=(1 + math.sqrt(5)) / 2):
-        super(TFNPLayer, self).__init__()
-        self.linear = nn.Linear(in_features, out_features)
-        self.phi = phi
-        self.torus_radius = nn.Parameter(torch.tensor(1.0))
-        self.circle_radius = nn.Parameter(torch.tensor(0.5))
-        self.sin_term = torch.tensor(math.sin(math.pi / 6))
-
-    def forward(self, x):
-        linear_out = self.linear(x)
-        torus_factor = self.torus_radius * torch.cos(2 * math.pi * linear_out / self.phi)
-        flower_factor = self.circle_radius * (torch.sin(3 * math.pi * linear_out) + self.sin_term)
-        return F.relu(linear_out + torus_factor + flower_factor)
-
-# ===========================
-# Define the Full Network
-# ===========================
-class SimpleNet(nn.Module):
-    def __init__(self, use_tfnp=False):
-        super(SimpleNet, self).__init__()
-        if use_tfnp:
-            self.layer1 = TFNPLayer(784, 128)
-        else:
-            self.layer1 = nn.Linear(784, 128)
-        self.layer2 = nn.Linear(128, 10)
-
-    def forward(self, x):
-        x = x.view(-1, 784)
-        x = F.relu(self.layer1(x))
-        x = self.layer2(x)
-        return x
-
-# ===========================
-# Data Loading
-# ===========================
-transform = transforms.Compose([
-    transforms.ToTensor(), 
-    transforms.Normalize((0.1307,), (0.3081,))
-])
-train_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform)
-test_dataset = datasets.MNIST('./data', train=False, transform=transform)
-train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
-
-# ===========================
-# Training Function
-# ===========================
-def train(model, epochs=3):
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
-    start_time = time.time()
-    losses = []
-    for epoch in range(epochs):
-        model.train()
-        total_loss = 0
-        for data, target in train_loader:
-            optimizer.zero_grad()
-            output = model(data)
-            loss = criterion(output, target)
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item()
-        avg_loss = total_loss / len(train_loader)
-        losses.append(avg_loss)
-        print(f"Epoch {epoch+1}, Loss: {avg_loss:.4f}")
-    end_time = time.time()
-    return losses, end_time - start_time
-
-# ===========================
-# Evaluation Function
-# ===========================
-def evaluate(model):
-    model.eval()
-    correct = 0
-    with torch.no_grad():
-        for data, target in test_loader:
-            output = model(data)
-            pred = output.argmax(dim=1, keepdim=True)
-            correct += pred.eq(target.view_as(pred)).sum().item()
-    accuracy = correct / len(test_loader.dataset)
-    return accuracy
-
-# ===========================
-# Run Standard Network
-# ===========================
-print("Training Standard Network...")
-standard_net = SimpleNet(use_tfnp=False)
-standard_losses, standard_time = train(standard_net)
-standard_acc = evaluate(standard_net)
-standard_variance = np.var(standard_losses)
-
-# ===========================
-# Run TFNP Network
-# ===========================
-print("\nTraining TFNP Network...")
-tfnp_net = SimpleNet(use_tfnp=True)
-tfnp_losses, tfnp_time = train(tfnp_net)
-tfnp_acc = evaluate(tfnp_net)
-tfnp_variance = np.var(tfnp_losses)
-
-# ===========================
-# Print Results
-# ===========================
-print("\n=== RESULTS ===")
-print(f"Standard Losses: {standard_losses}")
-print(f"Standard Variance: {standard_variance:.5f}")
-print(f"Standard Time: {standard_time:.2f} sec")
-print(f"Standard Accuracy: {standard_acc:.4f}")
-print(f"TFNP Losses: {tfnp_losses}")
-print(f"TFNP Variance: {tfnp_variance:.5f}")
-print(f"TFNP Time: {tfnp_time:.2f} sec")
-print(f"TFNP Accuracy: {tfnp_acc:.4f}")
-print(f"Training Speedup: {standard_time / tfnp_time:.2f}x")
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "4193a8ed",
+   "metadata": {},
+   "source": [
+    "# 🧠 MNIST Demo: TFNP vs Standard Linear\n",
+    "This notebook compares a standard feedforward neural network to one using the TFNP layer, on the MNIST dataset. It measures:\n",
+    "- Epoch-wise loss\n",
+    "- Loss variance\n",
+    "- Training time\n",
+    "- Final test accuracy\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "bcdd7b93",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import torch\n",
+    "import torch.nn as nn\n",
+    "import torch.optim as optim\n",
+    "from torchvision import datasets, transforms\n",
+    "from torch.utils.data import DataLoader\n",
+    "import time\n",
+    "import numpy as np\n",
+    "import torch.nn.functional as F\n",
+    "import math"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "94bda3e2",
+   "metadata": {},
+   "source": [
+    "## 🔁 Define TFNP Layer"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "d20bb5bb",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class TFNPLayer(nn.Module):\n",
+    "    def __init__(self, in_features, out_features, phi=(1 + math.sqrt(5)) / 2):\n",
+    "        super(TFNPLayer, self).__init__()\n",
+    "        self.linear = nn.Linear(in_features, out_features)\n",
+    "        self.phi = phi\n",
+    "        self.torus_radius = nn.Parameter(torch.tensor(1.0))\n",
+    "        self.circle_radius = nn.Parameter(torch.tensor(0.5))\n",
+    "        self.sin_term = torch.tensor(math.sin(math.pi / 6))\n",
+    "\n",
+    "    def forward(self, x):\n",
+    "        linear_out = self.linear(x)\n",
+    "        torus_factor = self.torus_radius * torch.cos(2 * math.pi * linear_out / self.phi)\n",
+    "        flower_factor = self.circle_radius * (torch.sin(3 * math.pi * linear_out) + self.sin_term)\n",
+    "        return F.relu(linear_out + torus_factor + flower_factor)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "11233aeb",
+   "metadata": {},
+   "source": [
+    "## 🧰 Define the Full Network"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "60a3b5f2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class SimpleNet(nn.Module):\n",
+    "    def __init__(self, use_tfnp=False):\n",
+    "        super(SimpleNet, self).__init__()\n",
+    "        if use_tfnp:\n",
+    "            self.layer1 = TFNPLayer(784, 128)\n",
+    "        else:\n",
+    "            self.layer1 = nn.Linear(784, 128)\n",
+    "        self.layer2 = nn.Linear(128, 10)\n",
+    "\n",
+    "    def forward(self, x):\n",
+    "        x = x.view(-1, 784)\n",
+    "        x = F.relu(self.layer1(x))\n",
+    "        x = self.layer2(x)\n",
+    "        return x"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "7ffcacbf",
+   "metadata": {},
+   "source": [
+    "## 🧪 Prepare the Data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "18f6a0bd",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "transform = transforms.Compose([\n",
+    "    transforms.ToTensor(), \n",
+    "    transforms.Normalize((0.1307,), (0.3081,))\n",
+    "])\n",
+    "train_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform)\n",
+    "test_dataset = datasets.MNIST('./data', train=False, transform=transform)\n",
+    "train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)\n",
+    "test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "3a77e6e7",
+   "metadata": {},
+   "source": [
+    "## 🏋️ Training & Evaluation Functions"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3cfc8cf7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def train(model, epochs=3):\n",
+    "    criterion = nn.CrossEntropyLoss()\n",
+    "    optimizer = optim.Adam(model.parameters(), lr=0.001)\n",
+    "    start_time = time.time()\n",
+    "    losses = []\n",
+    "    for epoch in range(epochs):\n",
+    "        model.train()\n",
+    "        total_loss = 0\n",
+    "        for data, target in train_loader:\n",
+    "            optimizer.zero_grad()\n",
+    "            output = model(data)\n",
+    "            loss = criterion(output, target)\n",
+    "            loss.backward()\n",
+    "            optimizer.step()\n",
+    "            total_loss += loss.item()\n",
+    "        avg_loss = total_loss / len(train_loader)\n",
+    "        losses.append(avg_loss)\n",
+    "        print(f\"Epoch {epoch+1}, Loss: {avg_loss:.4f}\")\n",
+    "    end_time = time.time()\n",
+    "    return losses, end_time - start_time\n",
+    "\n",
+    "def evaluate(model):\n",
+    "    model.eval()\n",
+    "    correct = 0\n",
+    "    with torch.no_grad():\n",
+    "        for data, target in test_loader:\n",
+    "            output = model(data)\n",
+    "            pred = output.argmax(dim=1, keepdim=True)\n",
+    "            correct += pred.eq(target.view_as(pred)).sum().item()\n",
+    "    accuracy = correct / len(test_loader.dataset)\n",
+    "    return accuracy"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "9d39a2ab",
+   "metadata": {},
+   "source": [
+    "## 🚀 Train and Compare Networks"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fb7797e5",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Standard Net\n",
+    "print(\"Training Standard Network...\")\n",
+    "standard_net = SimpleNet(use_tfnp=False)\n",
+    "standard_losses, standard_time = train(standard_net)\n",
+    "standard_acc = evaluate(standard_net)\n",
+    "standard_variance = np.var(standard_losses)\n",
+    "\n",
+    "# TFNP Net\n",
+    "print(\"\\nTraining TFNP Network...\")\n",
+    "tfnp_net = SimpleNet(use_tfnp=True)\n",
+    "tfnp_losses, tfnp_time = train(tfnp_net)\n",
+    "tfnp_acc = evaluate(tfnp_net)\n",
+    "tfnp_variance = np.var(tfnp_losses)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ad854f98",
+   "metadata": {},
+   "source": [
+    "## 📈 Results Summary"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "a960ac3d",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(\"\\n=== RESULTS ===\")\n",
+    "print(f\"Standard Losses: {standard_losses}\")\n",
+    "print(f\"Standard Variance: {standard_variance:.5f}\")\n",
+    "print(f\"Standard Time: {standard_time:.2f} sec\")\n",
+    "print(f\"Standard Accuracy: {standard_acc:.4f}\")\n",
+    "print(f\"TFNP Losses: {tfnp_losses}\")\n",
+    "print(f\"TFNP Variance: {tfnp_variance:.5f}\")\n",
+    "print(f\"TFNP Time: {tfnp_time:.2f} sec\")\n",
+    "print(f\"TFNP Accuracy: {tfnp_acc:.4f}\")\n",
+    "print(f\"Training Speedup: {standard_time / tfnp_time:.2f}x\")"
+   ]
+  }
+ ],
+ "metadata": {},
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
