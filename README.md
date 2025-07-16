@@ -54,7 +54,7 @@ jupyter notebook
 | **Sim 3**: Entropy Comparison | `notebooks/Sim3_entropy_comparison_simulation.ipynb` | Boost accuracy with geometric hidden layers | Accuracy ↑ | 92.1% → 96.4% |
 | **Sim 4**: FoL Autoencoder | `notebooks/Sim4_autoencoder_fol_simulation.ipynb` | Compress Seed of Life data into latent φ-space | MSE ↓ | 0.25 → 0.15 |
 | **Sim 5**: TFNP Fruit of Life Autoencoder | `notebooks/Sim5_Fruit_TFNP_Autoencoder_Simulation.ipynb` | Activate recursive φ codes for latent coherence | Entropy ↓ | 2.10 → 1.75 |
-| **Sim 6**: Biophoton Quantum Emission | `biophoton_simulation.ipynb` | Simulate Fruit-node emission coherence via φ | Entropy ↓ | 2.5 → 1.2 |
+| **Sim 6**: Biophoton Quantum Emission | `notebooks/Sim6_biophoton_simulation.ipynb` | Simulate Fruit-node emission coherence via φ | Entropy ↓ | 2.5 → 1.2 |
 | **Sim 7**: Quantum Foam Stability | `quantum_foam_simulation.ipynb` | Test entanglement stability under foam | Concurrence Var ↓ | ~0.001% |
 | **Sim 8**: Kryst Spiral vs Trap | `kryst_spiral_simulation.ipynb` | Detect “trap” cycles vs infinite expansion | Var(Entropy) ↓ | 0.103 → 0.086 |
 
