@@ -44,7 +44,8 @@ It’s like a convolutional layer—but instead of moving linearly through space
 🧮 Mathematical Summary
 The core layer forward propagation is described as:
 
-𝑌𝑙=sin⁡ (2𝜋𝑓𝑡)⋅(𝑊𝑙⋅(𝑋𝑙−1⊗𝑇)+𝑏𝑙)Y l ​ =sin(2πft)⋅(W l ​ ⋅(X l−1 ​ ⊗T)+b l​  )Where: 𝑇=𝑒𝑖𝛼(𝜙𝑖−𝜙𝑗)T=e iα(ϕ i​  −ϕ j  ) : Twist tensor 𝛼=72α= 27​ : Asymmetry constant 𝜙≈1.618ϕ≈1.618: Golden ratio scaling 𝑡t: Time/frequency modulation input
+𝑌𝑙=sin⁡ (2𝜋𝑓𝑡)⋅(𝑊𝑙⋅(𝑋𝑙−1⊗𝑇)+𝑏𝑙)Y l ​ =sin(2πft)⋅(W l ​ ⋅(X l−1 ​ ⊗T)+b l​  )Where: 𝑇=𝑒𝑖𝛼(𝜙𝑖−𝜙𝑗)T=e iα(ϕ i​  −ϕ j  ) :
+Twist tensor 𝛼=72α= 27​ :Asymmetry constant 𝜙≈1.618ϕ≈1.618: Golden ratio scaling 𝑡t: Time/frequency modulation input
 
 🧪 Benchmark Highlights
 Task	TFNP Result	Baseline ConvNet
