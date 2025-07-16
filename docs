@@ -1,0 +1,5 @@
+| Task                        | TFNP Result             | Baseline Conv       |
+| --------------------------- | ----------------------- | ------------------- |
+| CIFAR-10 (20% noise)        | 1.5x faster convergence | Slower, less stable |
+| MNIST Variance              | \~0.15                  | \~0.10              |
+| Entropy Simulation (S\@100) | \~13.33                 | N/A                 |
