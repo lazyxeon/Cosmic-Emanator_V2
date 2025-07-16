@@ -8,7 +8,7 @@ import numpy as np
 import torch.nn.functional as F
 import math
 
-# TFNPLayer class (same as above, with fix)
+# TFNPLayer definition
 class TFNPLayer(nn.Module):
     def __init__(self, in_features, out_features, phi=(1 + math.sqrt(5)) / 2):
         super(TFNPLayer, self).__init__()
@@ -24,7 +24,7 @@ class TFNPLayer(nn.Module):
         flower_factor = self.circle_radius * (torch.sin(3 * math.pi * linear_out) + self.sin_term)
         return F.relu(linear_out + torus_factor + flower_factor)
 
-# Simple Network
+# SimpleNet using optional TFNP
 class SimpleNet(nn.Module):
     def __init__(self, use_tfnp=False):
         super(SimpleNet, self).__init__()
@@ -40,14 +40,14 @@ class SimpleNet(nn.Module):
         x = self.layer2(x)
         return x
 
-# Data loaders
+# Data loading
 transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
 train_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform)
 test_dataset = datasets.MNIST('./data', train=False, transform=transform)
 train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
 
-# Train function
+# Training function
 def train(model, epochs=3):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -68,7 +68,7 @@ def train(model, epochs=3):
     end_time = time.time()
     return losses, end_time - start_time
 
-# Evaluate function
+# Evaluation function
 def evaluate(model):
     model.eval()
     correct = 0
@@ -80,18 +80,19 @@ def evaluate(model):
     accuracy = correct / len(test_loader.dataset)
     return accuracy
 
-# Run standard
+# Run baseline model
 standard_net = SimpleNet(use_tfnp=False)
 standard_losses, standard_time = train(standard_net)
 standard_acc = evaluate(standard_net)
 standard_variance = np.var(standard_losses)
 
-# Run TFNP
+# Run TFNP model
 tfnp_net = SimpleNet(use_tfnp=True)
 tfnp_losses, tfnp_time = train(tfnp_net)
 tfnp_acc = evaluate(tfnp_net)
 tfnp_variance = np.var(tfnp_losses)
 
+# Print results
 print(f"Standard Losses: {standard_losses}")
 print(f"Standard Variance: {standard_variance}")
 print(f"Standard Time: {standard_time}")
