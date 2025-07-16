@@ -63,7 +63,7 @@ jupyter notebook
 ## 🔍 Summary Table
 
 ```markdown
-See [summary_table.md](summary_table.md) for full metrics.
+See docs/Simulation_Summary.md for full metrics.
 ```
 
 ---
