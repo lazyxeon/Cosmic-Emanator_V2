@@ -1,0 +1,103 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+import time
+import numpy as np
+import torch.nn.functional as F
+import math
+
+# TFNPLayer class (same as above, with fix)
+class TFNPLayer(nn.Module):
+    def __init__(self, in_features, out_features, phi=(1 + math.sqrt(5)) / 2):
+        super(TFNPLayer, self).__init__()
+        self.linear = nn.Linear(in_features, out_features)
+        self.phi = phi
+        self.torus_radius = nn.Parameter(torch.tensor(1.0))
+        self.circle_radius = nn.Parameter(torch.tensor(0.5))
+        self.sin_term = torch.tensor(math.sin(math.pi / 6))
+
+    def forward(self, x):
+        linear_out = self.linear(x)
+        torus_factor = self.torus_radius * torch.cos(2 * math.pi * linear_out / self.phi)
+        flower_factor = self.circle_radius * (torch.sin(3 * math.pi * linear_out) + self.sin_term)
+        return F.relu(linear_out + torus_factor + flower_factor)
+
+# Simple Network
+class SimpleNet(nn.Module):
+    def __init__(self, use_tfnp=False):
+        super(SimpleNet, self).__init__()
+        if use_tfnp:
+            self.layer1 = TFNPLayer(784, 128)
+        else:
+            self.layer1 = nn.Linear(784, 128)
+        self.layer2 = nn.Linear(128, 10)
+
+    def forward(self, x):
+        x = x.view(-1, 784)
+        x = F.relu(self.layer1(x))
+        x = self.layer2(x)
+        return x
+
+# Data loaders
+transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
+train_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform)
+test_dataset = datasets.MNIST('./data', train=False, transform=transform)
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=1000, shuffle=False)
+
+# Train function
+def train(model, epochs=3):
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    start_time = time.time()
+    losses = []
+    for epoch in range(epochs):
+        model.train()
+        total_loss = 0
+        for data, target in train_loader:
+            optimizer.zero_grad()
+            output = model(data)
+            loss = criterion(output, target)
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
+        avg_loss = total_loss / len(train_loader)
+        losses.append(avg_loss)
+    end_time = time.time()
+    return losses, end_time - start_time
+
+# Evaluate function
+def evaluate(model):
+    model.eval()
+    correct = 0
+    with torch.no_grad():
+        for data, target in test_loader:
+            output = model(data)
+            pred = output.argmax(dim=1, keepdim=True)
+            correct += pred.eq(target.view_as(pred)).sum().item()
+    accuracy = correct / len(test_loader.dataset)
+    return accuracy
+
+# Run standard
+standard_net = SimpleNet(use_tfnp=False)
+standard_losses, standard_time = train(standard_net)
+standard_acc = evaluate(standard_net)
+standard_variance = np.var(standard_losses)
+
+# Run TFNP
+tfnp_net = SimpleNet(use_tfnp=True)
+tfnp_losses, tfnp_time = train(tfnp_net)
+tfnp_acc = evaluate(tfnp_net)
+tfnp_variance = np.var(tfnp_losses)
+
+print(f"Standard Losses: {standard_losses}")
+print(f"Standard Variance: {standard_variance}")
+print(f"Standard Time: {standard_time}")
+print(f"Standard Accuracy: {standard_acc}")
+print(f"TFNP Losses: {tfnp_losses}")
+print(f"TFNP Variance: {tfnp_variance}")
+print(f"TFNP Time: {tfnp_time}")
+print(f"TFNP Accuracy: {tfnp_acc}")
+print(f"Speedup: {standard_time / tfnp_time}")
